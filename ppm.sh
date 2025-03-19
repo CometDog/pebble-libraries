@@ -49,7 +49,8 @@ case "$1" in
     FILES_URL="https://api.github.com/repos/$GITHUB_USER/$REPO_NAME/contents/libs/$LIB_NAME/$VERSION"
     RESPONSE=$(curl -s "$FILES_URL")
 
-    if echo "$RESPONSE" | grep -q "Not Found" || echo "$RESPONSE" | grep -q "\"message\": \"Not Found\""; then
+    # Response returned Not Found
+    if echo "$RESPONSE" | grep -q "Not Found"; then
         echo "Error: Library $LIB_NAME version $VERSION not found in repository"
         exit 1
     fi
@@ -58,7 +59,7 @@ case "$1" in
     FILES=$(echo "$RESPONSE" | grep "name" | cut -d'"' -f4)
 
     if [ -z "$FILES" ]; then
-        echo "Error: No files found for $LIB_NAME version $VERSION"
+        echo "Error: No libs found for $LIB_NAME version $VERSION"
         exit 1
     fi
 
