@@ -46,8 +46,8 @@ case "$1" in
     echo "Downloading $LIB_NAME version $VERSION"
 
     # Check if library version exists
-    FILES_URL="https://api.github.com/repos/$GITHUB_USER/$REPO_NAME/contents/libs/$LIB_NAME/$VERSION"
-    RESPONSE=$(curl -s "$FILES_URL")
+    LIB_URL="https://api.github.com/repos/$GITHUB_USER/$REPO_NAME/contents/libs/$LIB_NAME/$VERSION"
+    RESPONSE=$(curl -s "$LIB_URL")
 
     # Response returned Not Found
     if echo "$RESPONSE" | grep -q "Not Found"; then
