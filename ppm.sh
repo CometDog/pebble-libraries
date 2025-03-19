@@ -3,7 +3,7 @@
 # Configuration
 GITHUB_USER="CometDog"
 REPO_NAME="pebble-libraries"
-LIBRARIES_DIR="@pebble-libraries"
+LIBRARIES_DIR="src/@pebble-libraries"
 PACKAGE_FILE="pebble-package.json"
 
 # Display usage information
