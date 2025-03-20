@@ -1,0 +1,15 @@
+#include "pebble.h"
+
+#if PBL_PLATFORM_EMERY
+#define DISPLAY_CENTER_X 100
+#define DISPLAY_CENTER_Y 114
+#define DISPLAY_SCALE 1.36
+#elif PBL_PLATFORM_CHALK
+#define DISPLAY_CENTER_X 90
+#define DISPLAY_CENTER_Y 90
+#define DISPLAY_SCALE 1.07
+#else
+#define DISPLAY_CENTER_X 72
+#define DISPLAY_CENTER_Y 84
+#define DISPLAY_SCALE 1
+#endif
