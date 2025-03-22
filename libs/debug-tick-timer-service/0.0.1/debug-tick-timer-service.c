@@ -23,12 +23,39 @@ static DebugTimer debug_timer;
 static void internal_tick_handler(struct tm *tick_time, TimeUnits units_changed)
 {
     // The current second is subtracted
-    uint8_t current_additional_seconds = -1;
-    if (debug_timer.time_scale == QUARTER)
+    long current_additional_seconds = -1;
+    switch (debug_timer.time_scale)
+    {
+    case QUARTER_MINUTE:
         current_additional_seconds += 15;
-
-    if (debug_timer.time_scale == HALF)
+        break;
+    case HALF_MINUTE:
         current_additional_seconds += 30;
+        break;
+    case FULL_MINUTE:
+        current_additional_seconds += 60;
+        break;
+    case QUARTER_HOUR:
+        current_additional_seconds += 900;
+        break;
+    case HALF_HOUR:
+        current_additional_seconds += 1800;
+        break;
+    case FULL_HOUR:
+        current_additional_seconds += 3600;
+        break;
+    case QUARTER_DAY:
+        current_additional_seconds += 21600;
+        break;
+    case HALF_DAY:
+        current_additional_seconds += 43200;
+        break;
+    case FULL_DAY:
+        current_additional_seconds += 86400;
+        break;
+    default:
+        break;
+    }
 
     if (current_additional_seconds > 0)
         debug_timer.additional_seconds += current_additional_seconds;
@@ -61,20 +88,27 @@ static void internal_tick_handler(struct tm *tick_time, TimeUnits units_changed)
 
     // Additional TimeUnits added as appropriate
     TimeUnits adjusted_units_changed = SECOND_UNIT;
-    if (accelerated_tm.tm_min != accelerated_last_tm.tm_min)
-        adjusted_units_changed |= MINUTE_UNIT;
-
-    if (accelerated_tm.tm_hour != accelerated_last_tm.tm_hour)
-        adjusted_units_changed |= HOUR_UNIT;
-
-    if (accelerated_tm.tm_mday != accelerated_last_tm.tm_mday)
-        adjusted_units_changed |= DAY_UNIT;
-
-    if (accelerated_tm.tm_mon != accelerated_last_tm.tm_mon)
-        adjusted_units_changed |= MONTH_UNIT;
-
+    // Every higher order update implies updates to all lower order time parts implicitly
     if (accelerated_tm.tm_year != accelerated_last_tm.tm_year)
-        adjusted_units_changed |= YEAR_UNIT;
+    {
+        adjusted_units_changed |= YEAR_UNIT | MONTH_UNIT | DAY_UNIT | HOUR_UNIT | MINUTE_UNIT;
+    }
+    else if (accelerated_tm.tm_mon != accelerated_last_tm.tm_mon)
+    {
+        adjusted_units_changed |= MONTH_UNIT | DAY_UNIT | HOUR_UNIT | MINUTE_UNIT;
+    }
+    else if (accelerated_tm.tm_mday != accelerated_last_tm.tm_mday)
+    {
+        adjusted_units_changed |= DAY_UNIT | HOUR_UNIT | MINUTE_UNIT;
+    }
+    else if (accelerated_tm.tm_hour != accelerated_last_tm.tm_hour)
+    {
+        adjusted_units_changed |= HOUR_UNIT | MINUTE_UNIT;
+    }
+    else if (accelerated_tm.tm_min != accelerated_last_tm.tm_min)
+    {
+        adjusted_units_changed |= MINUTE_UNIT;
+    }
 
     if (adjusted_units_changed & debug_timer.external_units)
         debug_timer.external_handler(&accelerated_tm, adjusted_units_changed);
