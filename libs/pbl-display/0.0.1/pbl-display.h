@@ -23,4 +23,5 @@
 #define DISPLAY_SCALE_Y 1
 #endif
 
+void round_face_positions(uint8_t less_screen_size, uint8_t x_inset, uint8_t y_inset, uint8_t buffer[][2]);
 void square_face_positions(uint8_t less_screen_size, uint8_t x_inset, uint8_t y_inset, uint8_t buffer[][2]);
